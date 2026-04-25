@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA Consultor Pro — Webs Educativas</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        hsl(209,40%,96%);
+  --bg-card:   hsl(210,40%,98%);
+  --bg-dark:   hsl(222,47%,11%);
+  --bg-card-d: hsl(217,32%,17%);
+  --bg-mid:    hsl(215,24%,26%);
+
+  --primary:   hsl(200,98%,39%);
+  --primary-l: hsl(198,93%,59%);
+  --primary-xl:hsl(199,95%,73%);
+  --primary-bg:hsl(200,98%,39%,0.08);
+  --primary-fg:hsl(204,100%,97%);
+
+  --fore:      hsl(222,47%,11%);
+  --fore-d:    hsl(210,40%,98%);
+  --muted:     hsl(215,20%,65%);
+  --border:    hsl(212,26%,83%);
+  --border-d:  hsl(215,19%,34%);
+
+  --radius: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Lora', Georgia, serif;
+  --font-display: 'Syne', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--fore);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── UTILITY ── */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+.label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display);
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--primary);
+  background: var(--primary-bg);
+  padding: 5px 12px; border-radius: 100px;
+  border: 1px solid hsl(200,98%,39%,0.2);
+}
+.label::before { content: ''; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; }
+
+/* ── HEADER ── */
+header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  padding: 0 2rem;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+header.scrolled {
+  background: hsl(209,40%,96%,0.9);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 var(--border);
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.1rem; font-weight: 800;
+  color: var(--fore); text-decoration: none;
+  display: flex; align-items: center; gap: 3px;
+}
+.logo-ia { color: var(--primary); }
+nav { display: flex; align-items: center; gap: 0.25rem; }
+nav a {
+  font-size: 0.85rem; font-weight: 500;
+  color: hsl(222,47%,40%);
+  text-decoration: none; padding: 7px 14px;
+  border-radius: var(--radius);
+  transition: background 0.15s, color 0.15s;
+}
+nav a:hover { background: hsl(200,98%,39%,0.08); color: var(--primary); }
+.nav-btn {
+  background: var(--primary);
+  color: var(--primary-fg) !important;
+  padding: 8px 18px !important;
+  border-radius: var(--radius) !important;
+  font-weight: 600 !important;
+  transition: opacity 0.2s, transform 0.15s !important;
+}
+.nav-btn:hover { opacity: 0.9; transform: translateY(-1px); background: var(--primary) !important; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 7rem 2rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, hsl(200,98%,39%,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 60%, hsl(198,93%,59%,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 20% 70%, hsl(215,24%,26%,0.05) 0%, transparent 60%);
+}
+.hero-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(hsl(200,98%,39%,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(200,98%,39%,0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
+}
+.hero-badge {
+  margin-bottom: 2rem;
+  animation: fade-up 0.6s ease both;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--fore);
+  margin-bottom: 1.5rem;
+  animation: fade-up 0.7s 0.1s ease both;
+}
+.hero h1 .highlight {
+  color: var(--primary);
+  position: relative;
+  display: inline-block;
+}
+.hero h1 .serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--bg-mid);
+}
+.hero-desc {
+  font-size: 1.1rem; font-weight: 400; line-height: 1.8;
+  color: hsl(222,47%,35%);
+  max-width: 560px; margin: 0 auto 2.5rem;
+  animation: fade-up 0.7s 0.2s ease both;
+}
+.hero-actions {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  animation: fade-up 0.7s 0.3s ease both;
+  margin-bottom: 4rem;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--primary); color: var(--primary-fg);
+  padding: 0.85rem 2rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem; font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  box-shadow: 0 4px 14px hsl(200,98%,39%,0.35);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px hsl(200,98%,39%,0.4); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--bg-card); color: var(--fore);
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem; font-weight: 500;
+  text-decoration: none; border: 1px solid var(--border);
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+.btn-secondary:hover { border-color: var(--primary); background: var(--primary-bg); transform: translateY(-1px); }
+
+/* HERO CARD DEMO */
+.hero-demo {
+  width: 100%; max-width: 780px;
+  background: var(--bg-dark);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px hsl(215,19%,34%),
+    0 32px 80px hsl(222,47%,11%,0.25),
+    0 8px 24px hsl(222,47%,11%,0.15);
+  animation: fade-up 0.8s 0.4s ease both;
+}
+.demo-topbar {
+  background: hsl(217,32%,14%);
+  padding: 12px 18px;
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid hsl(215,19%,20%);
+}
+.dots { display: flex; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.url-bar {
+  flex: 1; background: hsl(215,24%,18%);
+  border-radius: 6px; padding: 5px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem; color: hsl(215,20%,55%);
+}
+.demo-body {
+  display: grid; grid-template-columns: 180px 1fr;
+  min-height: 260px;
+}
+.demo-sidebar {
+  background: hsl(217,32%,15%);
+  border-right: 1px solid hsl(215,19%,22%);
+  padding: 1rem 0;
+}
+.ds-item {
+  padding: 9px 16px;
+  font-size: 0.75rem; color: hsl(215,20%,55%);
+  cursor: default; display: flex; align-items: center; gap: 8px;
+}
+.ds-item.active {
+  background: hsl(200,98%,39%,0.15);
+  color: var(--primary-l);
+  border-right: 2px solid var(--primary);
+}
+.ds-icon { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.5; flex-shrink: 0; }
+.ds-item.active .ds-icon { opacity: 1; }
+.demo-main { padding: 1.25rem; display: flex; flex-direction: column; gap: 12px; }
+.demo-header-bar {
+  background: hsl(215,24%,20%);
+  border-radius: 8px; padding: 12px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.demo-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--primary); display: flex; align-items: center;
+  justify-content: center; font-family: var(--font-display);
+  font-weight: 800; font-size: 0.85rem; color: var(--primary-fg);
+  flex-shrink: 0;
+}
+.demo-htext h4 { font-size: 0.8rem; font-weight: 600; color: hsl(210,40%,90%); }
+.demo-htext p { font-size: 0.65rem; color: hsl(215,20%,55%); margin-top: 2px; }
+.demo-cards-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.dc {
+  background: hsl(215,24%,20%);
+  border-radius: 6px; padding: 10px;
+  border-top: 2px solid var(--primary);
+  transition: transform 0.15s;
+}
+.dc:nth-child(2) { border-top-color: hsl(198,93%,59%); }
+.dc:nth-child(3) { border-top-color: hsl(215,24%,46%); }
+.dc-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--primary-l);
+  background: hsl(200,98%,39%,0.15);
+  padding: 2px 6px; border-radius: 4px;
+  display: inline-block; margin-bottom: 6px;
+}
+.dc:nth-child(2) .dc-label { color: hsl(198,93%,70%); background: hsl(198,93%,59%,0.15); }
+.dc:nth-child(3) .dc-label { color: hsl(215,20%,75%); background: hsl(215,20%,65%,0.15); }
+.dc-title { font-size: 0.72rem; font-weight: 600; color: hsl(210,40%,90%); }
+.dc-sub { font-size: 0.62rem; color: hsl(215,20%,55%); margin-top: 3px; }
+.demo-forms-row { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
+.df {
+  background: hsl(215,24%,20%);
+  border-radius: 6px; padding: 9px 12px;
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid hsl(215,19%,28%);
+}
+.df-tag {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: hsl(27,100%,60%,0.15); color: hsl(27,100%,65%);
+  padding: 2px 6px; border-radius: 4px; flex-shrink: 0;
+}
+.df-div {
+  font-size: 8px; padding: 2px 6px; border-radius: 4px;
+  background: hsl(215,24%,26%); color: hsl(215,20%,65%);
+  flex-shrink: 0;
+}
+.df-title { font-size: 0.7rem; font-weight: 500; color: hsl(210,40%,85%); }
+
+/* ── SOCIAL PROOF ── */
+.social-strip {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+  display: flex; align-items: center; justify-content: center;
+  gap: 3rem; flex-wrap: wrap;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 1.75rem; font-weight: 800; color: var(--primary);
+  line-height: 1;
+}
+.stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+.stat-sep { width: 1px; height: 40px; background: var(--border); }
+
+/* ── SECCIONES ── */
+.section { padding: 6rem 2rem; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-header { margin-bottom: 3.5rem; }
+.section-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800; letter-spacing: -0.025em;
+  line-height: 1.1; margin-top: 1rem; margin-bottom: 1rem;
+}
+.section-header h2 .serif {
+  font-family: var(--font-serif); font-style: italic;
+  font-weight: 600; color: var(--primary);
+}
+.section-header p { font-size: 1rem; color: hsl(222,47%,35%); line-height: 1.75; max-width: 520px; }
+
+/* ── PROPUESTA ── */
+#propuesta { background: var(--bg-dark); color: var(--fore-d); }
+#propuesta .section-header h2 { color: var(--fore-d); }
+#propuesta .section-header p { color: hsl(215,20%,65%); }
+.prop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+.feat-list { display: flex; flex-direction: column; gap: 0; }
+.feat-item {
+  display: grid; grid-template-columns: 44px 1fr;
+  gap: 1rem; align-items: start;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border-d);
+  transition: background 0.2s;
+}
+.feat-item:first-child { border-top: 1px solid var(--border-d); }
+.feat-icon {
+  width: 44px; height: 44px;
+  background: hsl(200,98%,39%,0.15);
+  border: 1px solid hsl(200,98%,39%,0.25);
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.feat-body h3 { font-size: 0.92rem; font-weight: 600; color: var(--fore-d); margin-bottom: 5px; }
+.feat-body p { font-size: 0.82rem; color: hsl(215,20%,60%); line-height: 1.6; }
+.prop-text p {
+  font-size: 0.95rem; line-height: 1.85;
+  color: hsl(215,20%,65%); margin-bottom: 1.25rem;
+}
+.prop-text strong { color: var(--primary-l); font-weight: 600; }
+.prop-highlight {
+  background: hsl(200,98%,39%,0.1);
+  border: 1px solid hsl(200,98%,39%,0.2);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-top: 1.5rem;
+}
+.prop-highlight p { color: hsl(198,93%,73%) !important; margin: 0 !important; font-size: 0.88rem !important; }
+
+/* ── TEMATICAS ── */
+#modelo { background: var(--bg); }
+.temas-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.tema {
+  background: var(--bg-card);
+  padding: 2rem 1.75rem;
+  position: relative; overflow: hidden;
+  transition: background 0.25s;
+  cursor: default;
+}
+.tema:hover { background: hsl(200,98%,39%,0.05); }
+.tema::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--primary);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.tema:hover::after { transform: scaleX(1); }
+.tema-num {
+  position: absolute; top: 12px; right: 16px;
+  font-family: var(--font-display);
+  font-size: 3rem; font-weight: 800;
+  color: hsl(200,98%,39%,0.07); line-height: 1;
+  pointer-events: none;
+}
+.tema-icon { font-size: 1.6rem; margin-bottom: 1rem; }
+.tema-tag {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--primary);
+  margin-bottom: 8px;
+}
+.tema h3 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+.tema p { font-size: 0.82rem; color: hsl(222,47%,40%); line-height: 1.65; }
+
+/* ── PROCESO ── */
+#proceso { background: var(--bg-card); }
+.steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.step {
+  background: var(--bg-card);
+  padding: 2rem 1.5rem;
+  position: relative;
+  transition: background 0.2s;
+}
+.step:hover { background: hsl(200,98%,39%,0.04); }
+.step-num {
+  font-family: var(--font-display);
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em;
+  color: var(--primary); margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.step-num::before {
+  content: '';
+  width: 24px; height: 24px;
+  background: var(--primary);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-num-inner { background: var(--primary); color: var(--primary-fg); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
+.step h3 { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+.step p { font-size: 0.82rem; color: hsl(222,47%,40%); line-height: 1.65; }
+
+/* ── CTA ── */
+#contacto {
+  background: var(--bg-dark);
+  text-align: center;
+  padding: 7rem 2rem;
+  position: relative; overflow: hidden;
+}
+.cta-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 100%, hsl(200,98%,39%,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 20% 20%, hsl(198,93%,59%,0.08) 0%, transparent 60%);
+}
+#contacto h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem,5vw,4rem);
+  font-weight: 800; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--fore-d);
+  margin: 1rem 0 1.25rem; position: relative;
+}
+#contacto h2 .serif {
+  font-family: var(--font-serif); font-style: italic;
+  font-weight: 600; color: var(--primary-l);
+}
+#contacto p { font-size: 1rem; color: hsl(215,20%,60%); line-height: 1.8; max-width: 480px; margin: 0 auto 2.5rem; position: relative; }
+.cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; margin-bottom: 2.5rem; }
+
+.btn-wa {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #25D366; color: #fff;
+  padding: 0.9rem 2rem; border-radius: var(--radius);
+  font-size: 0.9rem; font-weight: 600; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(37,211,102,0.3);
+}
+.btn-wa:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,0.4); }
+
+.btn-ig {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  color: #fff; padding: 0.9rem 2rem; border-radius: var(--radius);
+  font-size: 0.9rem; font-weight: 600; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(220,39,67,0.25);
+}
+.btn-ig:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(220,39,67,0.35); }
+
+.btn-primary-d {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--primary); color: var(--primary-fg);
+  padding: 0.9rem 2rem; border-radius: var(--radius);
+  font-size: 0.9rem; font-weight: 600; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px hsl(200,98%,39%,0.4);
+}
+.btn-primary-d:hover { transform: translateY(-2px); box-shadow: 0 8px 24px hsl(200,98%,39%,0.5); }
+
+.cta-handle { font-size: 0.8rem; color: hsl(215,20%,50%); position: relative; }
+.cta-handle strong { color: var(--primary-l); }
+
+/* ── FOOTER ── */
+footer {
+  background: hsl(222,47%,8%);
+  padding: 1.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem;
+  border-top: 1px solid hsl(215,19%,18%);
+}
+.footer-logo { font-family: var(--font-display); font-size: 1rem; font-weight: 800; color: hsl(210,40%,80%); }
+.footer-logo span { color: var(--primary-l); }
+.footer-copy { font-size: 0.75rem; color: hsl(215,20%,40%); }
+.footer-links { display: flex; gap: 1.5rem; }
+.footer-links a { font-size: 0.78rem; color: hsl(215,20%,50%); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--primary-l); }
+
+/* ── ANIMATIONS ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.18s; }
+.reveal-d3 { transition-delay: 0.26s; }
+.reveal-d4 { transition-delay: 0.34s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .prop-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .temas-grid { grid-template-columns: 1fr 1fr; }
+  .steps { grid-template-columns: 1fr 1fr; }
+  .demo-body { grid-template-columns: 1fr; }
+  .demo-sidebar { display: none; }
+}
+@media (max-width: 640px) {
+  .temas-grid { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr; }
+  .demo-cards-row { grid-template-columns: 1fr; }
+  .demo-forms-row { grid-template-columns: 1fr; }
+  .social-strip { gap: 1.5rem; }
+  .stat-sep { display: none; }
+  nav a:not(.nav-btn) { display: none; }
+  footer { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="nav-inner">
+    <a href="#" class="logo"><span class="logo-ia">IA</span> Consultor Pro</a>
+    <nav>
+      <a href="#propuesta">Propuesta</a>
+      <a href="#modelo">Tematicas</a>
+      <a href="#proceso">Proceso</a>
+      <a href="https://wa.me/5492664000000?text=Hola!%20Quiero%20una%20web%20educativa" target="_blank" class="nav-btn">Contactar</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-badge">
+    <span class="label">Webs educativas de alto impacto</span>
+  </div>
+
+  <h1>
+    Tu materia merece<br>
+    una web <span class="highlight">extraordinaria</span><br>
+    <span class="serif">que inspire a tus alumnos.</span>
+  </h1>
+
+  <p class="hero-desc">
+    Diseno plataformas educativas a medida, inspiradas en la tematica de cada docente. Contenido vivo en Google Docs, evaluaciones integradas y diseno que enamora.
+  </p>
+
+  <div class="hero-actions">
+    <a href="https://wa.me/5492664000000?text=Hola!%20Quiero%20una%20web%20educativa%20para%20mi%20materia" target="_blank" class="btn-primary">
+      &#128172; Hablar por WhatsApp
+    </a>
+    <a href="#modelo" class="btn-secondary">
+      Ver tematicas &#8594;
+    </a>
+  </div>
+
+  <!-- DEMO PREVIEW -->
+  <div class="hero-demo">
+    <div class="demo-topbar">
+      <div class="dots">
+        <div class="dot" style="background:#FF5F57"></div>
+        <div class="dot" style="background:#FFBD2E"></div>
+        <div class="dot" style="background:#28C840"></div>
+      </div>
+      <div class="url-bar">gbgaveglio.github.io/plastica</div>
+    </div>
+    <div class="demo-body">
+      <div class="demo-sidebar">
+        <div class="ds-item">&#127968; Inicio</div>
+        <div class="ds-item active"><span class="ds-icon"></span> 1&#176; curso</div>
+        <div class="ds-item"><span class="ds-icon"></span> 2&#176; curso</div>
+        <div class="ds-item"><span class="ds-icon"></span> 3&#176; curso</div>
+        <div class="ds-item"><span class="ds-icon"></span> 5&#176; curso</div>
+      </div>
+      <div class="demo-main">
+        <div class="demo-header-bar">
+          <div class="demo-avatar">1&#176;</div>
+          <div class="demo-htext">
+            <h4>Primer curso &mdash; Plastica &amp; Visual</h4>
+            <p>Lenguaje visual &middot; Elementos basicos &middot; Color &middot; Perspectiva</p>
+          </div>
+        </div>
+        <div class="demo-cards-row">
+          <div class="dc"><div class="dc-label">Doc</div><div class="dc-title">El Punto</div><div class="dc-sub">Lenguaje visual basico</div></div>
+          <div class="dc"><div class="dc-label">Doc</div><div class="dc-title">La Forma</div><div class="dc-sub">Geometricas y organicas</div></div>
+          <div class="dc"><div class="dc-label">Doc</div><div class="dc-title">El Color</div><div class="dc-sub">Teoria del color</div></div>
+        </div>
+        <div class="demo-forms-row">
+          <div class="df"><div class="df-tag">Form</div><div class="df-div">1&#176; div</div><div class="df-title">El Punto &mdash; Evaluacion</div></div>
+          <div class="df"><div class="df-tag">Form</div><div class="df-div">2&#176; div</div><div class="df-title">El Punto &mdash; Evaluacion</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<div class="social-strip">
+  <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Cursos publicados</div></div>
+  <div class="stat-sep"></div>
+  <div class="stat-item"><div class="stat-num">40+</div><div class="stat-label">Cuadernos digitales</div></div>
+  <div class="stat-sep"></div>
+  <div class="stat-item"><div class="stat-num">32+</div><div class="stat-label">Evaluaciones integradas</div></div>
+  <div class="stat-sep"></div>
+  <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Actualizable sin codigo</div></div>
+</div>
+
+<!-- PROPUESTA -->
+<section class="section" id="propuesta">
+  <div class="section-inner">
+    <div class="prop-grid">
+      <div>
+        <div class="label reveal">Por que elegirme</div>
+        <h2 class="section-header" style="margin-bottom:0">
+          <div class="section-header">
+            <h2 class="reveal reveal-d1">Una web que no es<br>solo <span class="serif">informacion.</span></h2>
+          </div>
+        </h2>
+        <div class="prop-text reveal reveal-d2">
+          <p>Los docentes merecen una presencia digital a la altura de su trabajo. No un blog olvidado ni una carpeta de Drive sin estructura.</p>
+          <p>Cada web que construyo parte desde la tematica de la materia. <strong>Plastica tiene un lenguaje visual. Historia tiene una narrativa. Biologia tiene un ritmo organico.</strong> El diseno lo refleja.</p>
+          <p>Los contenidos viven en Google Docs. Cuando editas el documento, la web se actualiza. Sin tecnicos, sin codigo, sin friccion.</p>
+          <div class="prop-highlight">
+            <p>&#128161; Editas el Google Doc hoy, tus alumnos ven el contenido actualizado manana. Sin intermediarios.</p>
+          </div>
+        </div>
+      </div>
+      <div class="feat-list reveal reveal-d2">
+        <div class="feat-item">
+          <div class="feat-icon">&#127912;</div>
+          <div class="feat-body"><h3>Diseno con identidad propia</h3><p>Cada web tiene una estetica unica pensada desde la tematica de tu materia. No hay dos iguales.</p></div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon">&#128196;</div>
+          <div class="feat-body"><h3>Contenido que se actualiza solo</h3><p>Los cuadernos viven en Google Docs. Editas el Doc y la web refleja los cambios al instante.</p></div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon">&#9989;</div>
+          <div class="feat-body"><h3>Evaluaciones integradas</h3><p>Google Forms por division y por tema, embebidos directamente. Las notas llegan a tu planilla.</p></div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon">&#128273;</div>
+          <div class="feat-body"><h3>Panel de administracion</h3><p>Agrega cuadernos y evaluaciones sin tocar codigo. Un panel simple con clave, solo para vos.</p></div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon">&#127758;</div>
+          <div class="feat-body"><h3>Publicacion gratuita</h3><p>Hosting en GitHub Pages sin costo. La inversion es en el diseno, no en la infraestructura.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMATICAS -->
+<section class="section" id="modelo">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="label reveal">Tematicas disponibles</div>
+      <h2 class="reveal reveal-d1">Un modelo para<br>cada <span class="serif">materia.</span></h2>
+      <p class="reveal reveal-d2">El modelo de web educativa se adapta a cualquier area del conocimiento. Cada tematica tiene su paleta, su tipografia, su lenguaje visual.</p>
+    </div>
+    <div class="temas-grid">
+      <div class="tema reveal"><div class="tema-num">1</div><div class="tema-icon">&#127912;</div><div class="tema-tag">Artes</div><h3>Plastica &amp; Visual</h3><p>Composicion editorial, tipografia expresiva, paleta de autor. Como la web que ya tenes funcionando.</p></div>
+      <div class="tema reveal reveal-d1"><div class="tema-num">2</div><div class="tema-icon">&#129516;</div><div class="tema-tag">Ciencias</div><h3>Biologia &amp; Naturales</h3><p>Estetica organica, verdes botanicos, diagramas interactivos, fotografia de la naturaleza.</p></div>
+      <div class="tema reveal reveal-d2"><div class="tema-num">3</div><div class="tema-icon">&#128214;</div><div class="tema-tag">Humanidades</div><h3>Historia &amp; Geografia</h3><p>Lineas de tiempo, cartografia, tipografia clasica, paleta tierra. Narrativa visual de epoca.</p></div>
+      <div class="tema reveal reveal-d1"><div class="tema-num">4</div><div class="tema-icon">&#10006;</div><div class="tema-tag">Exactas</div><h3>Matematica &amp; Fisica</h3><p>Geometria como diseno, grillas modulares, precision y claridad. La elegancia de los numeros.</p></div>
+      <div class="tema reveal reveal-d2"><div class="tema-num">5</div><div class="tema-icon">&#127925;</div><div class="tema-tag">Expresion</div><h3>Musica &amp; Teatro</h3><p>Ritmo visual, negro y dorado, pentagrama como elemento grafico. Emocion en cada scroll.</p></div>
+      <div class="tema reveal reveal-d3"><div class="tema-num">6</div><div class="tema-icon">&#128187;</div><div class="tema-tag">Tecnologia</div><h3>Informatica &amp; TIC</h3><p>Dark mode, tipografia monospace, codigo como ornamento. Futurista y funcional a la vez.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section class="section" id="proceso">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="label reveal">Como trabajamos</div>
+      <h2 class="reveal reveal-d1">Del primer mensaje<br>a la web <span class="serif">publicada.</span></h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num"><div class="step-num-inner">1</div></div>
+        <h3>Charla inicial</h3>
+        <p>Me contas tu materia, tus cursos y que contenidos tenes. Por WhatsApp o Instagram, sin formularios.</p>
+      </div>
+      <div class="step reveal reveal-d1">
+        <div class="step-num"><div class="step-num-inner">2</div></div>
+        <h3>Diseno a medida</h3>
+        <p>Defino la estetica segun tu tematica. Te muestro una propuesta visual antes de construir.</p>
+      </div>
+      <div class="step reveal reveal-d2">
+        <div class="step-num"><div class="step-num-inner">3</div></div>
+        <h3>Carga de contenidos</h3>
+        <p>Conectamos tus Google Docs, Drive y Forms. Todo queda enlazado y listo para actualizar.</p>
+      </div>
+      <div class="step reveal reveal-d3">
+        <div class="step-num"><div class="step-num-inner">4</div></div>
+        <h3>Publicacion y entrega</h3>
+        <p>Tu web queda online en GitHub Pages. Te entrego el codigo y el acceso al panel admin.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contacto">
+  <div class="cta-bg"></div>
+  <div class="label reveal" style="margin-bottom:1.5rem">Empezar ahora</div>
+  <h2 class="reveal reveal-d1">
+    Tu materia se merece<br>
+    <span class="serif">una web increible.</span>
+  </h2>
+  <p class="reveal reveal-d2">Escribime hoy. Contame tu materia y tus cursos. En menos de 48 horas tenes una propuesta de diseno lista.</p>
+  <div class="cta-btns reveal reveal-d2">
+    <a href="https://wa.me/5492664000000?text=Hola!%20Vi%20tu%20web%20y%20quiero%20una%20web%20educativa%20para%20mi%20materia" target="_blank" class="btn-wa">&#128172; WhatsApp</a>
+    <a href="https://instagram.com/iaconsultorpro" target="_blank" class="btn-ig">&#128247; @iaconsultorpro</a>
+    <a href="https://gbgaveglio.github.io" target="_blank" class="btn-primary-d">&#127758; Ver web de ejemplo</a>
+  </div>
+  <div class="cta-handle reveal reveal-d3">Seguime en <strong>@iaconsultorpro</strong> para ver ejemplos y novedades</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">IA<span>Consultor</span>Pro</div>
+  <div class="footer-copy">Diseno web educativo &middot; San Luis, Argentina</div>
+  <div class="footer-links">
+    <a href="https://instagram.com/iaconsultorpro" target="_blank">Instagram</a>
+    <a href="https://wa.me/5492664000000" target="_blank">WhatsApp</a>
+  </div>
+</footer>
+
+<script>
+// Header scroll
+const hdr = document.getElementById('hdr');
+window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', scrollY > 40));
+
+// Reveal on scroll
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
